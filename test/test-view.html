@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../src/tint.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row" style='height:100px'>
+		</div>
+		<div class="row">
+			<div class="col-md-12 well">
+				<h2>Tint.js test</h2>
+				<p>This test page shows tint.js in action, pulling data from the API and rendering it with both default and custom templates</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4 well">
+				<p>Tests if the models can fetch the API and have good data in them.</p>
+				<ul>
+					<li><button class="test1-fetch">Fetch</button></li>
+					<li><button class="test1-fetch-timestamp">Fetch with Timestamp</button></li>
+					<li><button class="test1-fetch-network">Fetch with Network</button></li>
+				</ul>
+			</div>
+			<div class="col-md-8 test1">
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function(){
+			$('.test1-fetch').click(function(){
+				var t = new Tint.PostCollection({username: 'tint'});
+				t.fetch({
+					success: function(res){
+						$('.test1').html(res);
+					},
+					error: function(res){
+						$('.test1').html(res);
+					}
+				});
+			});
+			$('.test1-fetch-timestamp').click(function(){
+
+			});
+			$('.test1-fetch-network').click(function(){
+
+			});
+		});
+	</script>
+</body>
+</html>
