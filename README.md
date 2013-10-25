@@ -29,27 +29,31 @@ Tint.js models are extensions of Backbone.js modules. Use them to pull in data f
 ```javascript
 // create a new collection of posts
 var collection = new Tint.PostCollection();
-    collection.username = 'your_username_here';
+collection.username = 'your_username_here';
 // create a new view, associating them with this collection
 var postView = new Tint.PostView({model: collection});
 // pull data from server
-    collection.fetch();
+collection.fetch();
 ```
 
 The model comes with a number of properties that can be modified to change what data is returned
+
+```javascript
 var collection = new Tint.PostCollection({
 	username: '', // the username of your Tint
 	network: 'facebook', // all, twitter, instagram, etc.
 	from : 1382485719887 // a timestamp indicating when to start pulling in data
 });
+```
 
 ### The View
 
 Views can use custom templates to render the data. Our templating system makes this easy. Just do the following:
+
 1. Define a template using mustache.js syntax, and add it to your page as a <script> tag.
 2. Associate it with a view using the _Tint.Utils.template_ function
 
-```html
+```javascript
 <!-- 1. defining a custom template -->
 <script class="my_template_name" type="application/x-template">
 	<div>
@@ -58,7 +62,7 @@ Views can use custom templates to render the data. Our templating system makes t
 </script>
 ```
 
-```html
+```javascript
 <!-- 2. setting up model and view with custom template -->
 <script>
 	Tint.ready(function(){

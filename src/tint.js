@@ -166,7 +166,7 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
         render: function() {
             var that = this;
             $(this.el).empty();
-            console.log('PostView render');
+            Tint.log('PostView render');
             // use remote default template if no template is passed in
             Tint.Utils.getMustache(this.options.template, function(template){
 
@@ -199,16 +199,16 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
             var infiniScrollParam = "ref_timestamp";
             this.infiniScroll = new Backbone.InfiniScroll(this.model, {
                 success: function(collection, res){
-                    console.log('infiniScroll success');
-                    console.log(res);
+                    Tint.log('infiniScroll success');
+                    Tint.log(res);
                     that.renderAppend();
                 },
                 error: function(collection, res){
-                    console.log('infiniScroll err');
-                    console.log(res);
+                    Tint.log('infiniScroll err');
+                    Tint.log(res);
                 },
                 onFetch: function(){
-                    console.log('onFetch');
+                    Tint.log('onFetch');
                 },
                 param: infiniScrollParam,
                 untilAttr: infiniScrollParam,
@@ -219,7 +219,7 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
         },
         render: function(){
             var that = this;
-            console.log('PostHolderView render');
+            Tint.log('PostHolderView render');
             this.postsRenderedCount = 0;
             $(this.el).empty();
 
@@ -252,9 +252,11 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
         },
         // called by post so that function can be called after all posts have rendered
         postRendered: function(){
+            
             this.postsRenderedCount++;
-            if(this.postsRenderedCount === this.model.models.length && typeof this.afterRender === 'function'){
-                this.afterRender();
+
+            if(this.postsRenderedCount === this.model.models.length && typeof this.options.afterRender === 'function'){
+                this.options.afterRender();
             }
         },
         // pulls next page and appends new posts
@@ -286,6 +288,12 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
             }
         }, 500);
     });
+
+    Tint.log = function(str){
+        if(Tint.logstate === 'debug'){
+            console.log(str);
+        }
+    };
 
     Tint.Utils = {
         getMustache: function(id, callback){

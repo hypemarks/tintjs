@@ -162,8 +162,8 @@
 
 				// Test 5
 				it("will call a callback function after render", function(){
+					Tint.logstate = 'debug';
 					runs(function(){
-
 						// View and API components are loaded
 						// create a new collection of posts
 						collection = new Tint.PostCollection();
@@ -188,6 +188,7 @@
 
 					runs(function(){
 						expect(callbackFlag).toBe(true);
+						Tint.logstate = '';
 					});	
 				});
 
