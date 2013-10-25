@@ -254,7 +254,7 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
         postRendered: function(){
             
             this.postsRenderedCount++;
-
+ 
             if(this.postsRenderedCount === this.model.models.length && typeof this.options.afterRender === 'function'){
                 this.options.afterRender();
             }
