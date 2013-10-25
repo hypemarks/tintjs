@@ -47,7 +47,8 @@ var collection = new Tint.PostCollection({
 Views can use custom templates to render the data. Our templating system makes this easy. Just do the following:
 
 1. Define a template using mustache.js syntax, and either put it on the page in a script tag, or host it somewhere with jsonp enabled
-2. Associate it with a view using the identifier or the URL to your template
+2. Associate it with a view using the CSS identifier or the URL to your template
+3. Optionally, add a CSS file to style the template and store it as "template_css"
 
 ```javascript
 <!-- 1. defining a custom template -->
@@ -68,10 +69,13 @@ Views can use custom templates to render the data. Our templating system makes t
 		collection.username = 'your_username_here'; // required
 		// create a new view, associating them with this collection
 		var postHolderView = new Tint.PostHolderView({
-			model: collection
-			template: 'http://www.example.com/url/to/your/jsonp/template', // optional template for a single post (see http://dev.tintup.com/template/postTemplate_basic?callback=example for an example)
-			template_css: 'http://www.example.com/url/to/your/css.css', // optional css file to go with your template
-			afterRender: function(){ // optional function to be called after all of the posts have rendered
+			model: collection,
+			// optional template for a single post (see http://dev.tintup.com/template/postTemplate_basic?callback=example for an example)
+			template: 'http://www.example.com/url/to/your/jsonp/template',
+			// optional css file to go with your template
+			template_css: 'http://www.example.com/url/to/your/css.css',
+			// optional function to be called after all of the posts have rendered
+			afterRender: function(){
 				console.log('render finished');
 			}
 		});
