@@ -2,13 +2,16 @@
 <html>
 <head>
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/jasmine/1.3.1/jasmine.css" />
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="../src/tint.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jasmine/1.3.1/jasmine.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jasmine/1.3.1/jasmine-html.js"></script>
 </head>
 <body>
 	<div class="container">
-		<div class="row" style='height:100px'>
+		<div class="row" style='height:40px'>
 		</div>
 		<div class="row">
 			<div class="col-md-12 well">
@@ -17,38 +20,214 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 well">
-				<p>Tests if the models can fetch the API and have good data in them.</p>
-				<ul>
-					<li><button class="test1-fetch">Fetch</button></li>
-					<li><button class="test1-fetch-timestamp">Fetch with Timestamp</button></li>
-					<li><button class="test1-fetch-network">Fetch with Network</button></li>
+			<div class="col-md-12">
+				<ul class="nav nav-tabs">
+					<li><a href="#tab1" data-toggle="tab">Custom</a></li>
+					<li><a href="#tab2" data-toggle="tab">Default</a></li>
+					<li><a href="#tab3" data-toggle="tab">Default - Callback</a></li>
+					<li><a href="#tab4" data-toggle="tab">Next Page</a></li>
 				</ul>
-			</div>
-			<div class="col-md-8 test1">
+				<div class="tab-content">
+					<div class="tab-pane" id="tab1">
+					</div>
+					<div class="tab-pane" id="tab2">
+					</div>
+					<div class="tab-pane" id="tab3">
+					</div>
+					<div class="tab-pane" id="tab4">
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 
 	<script>
 		$(document).ready(function(){
-			$('.test1-fetch').click(function(){
-				var t = new Tint.PostCollection({username: 'tint'});
-				t.fetch({
-					success: function(res){
-						$('.test1').html(res);
-					},
-					error: function(res){
-						$('.test1').html(res);
-					}
+
+			var test_delay = 1500;
+
+			// Test 1
+			describe("Tint.js Env", function(){
+				it("will load callback only after dependencies have loaded", function(){
+
+					runs(function() {
+						f1 = false;
+						Tint.ready(function(){
+							// View and API components are loaded
+							f1 = true;
+						});
+					});
+					
+					waitsFor(function() {
+						return f1;
+					}, "The callback should load", test_delay);
+
+					runs(function(){
+						expect(Tint).not.toBeUndefined();
+					});
+
 				});
 			});
-			$('.test1-fetch-timestamp').click(function(){
+
+			// Test 2
+			describe("Tint.js Collection", function() {
+
+				it("will fetch a username", function() {
+
+					var t = new Tint.PostCollection();
+					t.username = 'tint';
+
+					runs(function() {
+						flag = false;	
+						t.fetch({
+							success: function(res){
+								flag = true;
+							},
+							error: function(res){
+								flag = true;
+							}
+						});
+					});
+
+					waitsFor(function() {
+						return flag;
+					}, "The fetch should return", 750);
+					
+
+					runs(function(){
+						expect(t.models.length).toBeGreaterThan(5);
+					});				
+
+				});
+
+				// Test 3
+				it("will use a custom template to display content", function(){
+
+
+					runs(function() {
+						$('body').append($('<script>').addClass('my_template_name').attr('type', 'application/x-template').html('<div>\
+								<h2>{{ title }}</h2>\
+							</div>'));
+
+						// View and API components are loaded
+						// create a new collection of posts
+						collection = new Tint.PostCollection();
+						collection.username = 'idealab';
+						// create a new view, associating them with this collection
+						var postHolderView = new Tint.PostHolderView({
+							model: collection,
+							template: '.my_template_name',
+							el: $('#tab1')
+						});
+						// pull data from server
+						collection.fetch();
+					});
+
+
+					waitsFor(function() {
+						return ($('#tab1 div').length > 0);
+					}, "The fetch should return", test_delay);
+
+					runs(function(){
+						expect($('#tab1').html().length).toBeGreaterThan(50);
+					});	
+
+				});
+
+				// Test 4
+				it("will use a default template to display content", function(){
+					runs(function(){
+
+						// View and API components are loaded
+						// create a new collection of posts
+						collection = new Tint.PostCollection();
+						collection.username = 'idealab';
+						// create a new view, associating them with this collection
+						var postHolderView = new Tint.PostHolderView({
+							model: collection,
+							el: $('#tab2')
+						});
+						// pull data from server
+						collection.fetch();
+					});
+
+					waitsFor(function() {
+						return ($('#tab2 div').length > 0);
+					}, "The fetch should return", test_delay);
+
+					runs(function(){
+						expect($('#tab2').html().length).toBeGreaterThan(50);
+					});	
+				});
+
+				// Test 5
+				it("will call a callback function after render", function(){
+					runs(function(){
+
+						// View and API components are loaded
+						// create a new collection of posts
+						collection = new Tint.PostCollection();
+						collection.username = 'idealab';
+						// create a new view, associating them with this collection
+						callbackFlag = false;
+						var postHolderView = new Tint.PostHolderView({
+							model: collection,
+							el: $('#tab3'),
+							afterRender: function(){
+								console.log('afterRender');
+								callbackFlag = true;
+							}
+						});
+						// pull data from server
+						collection.fetch();
+					});
+
+					waitsFor(function() {
+						return callbackFlag;
+					}, "The callback function should be called", test_delay);
+
+					runs(function(){
+						expect(callbackFlag).toBe(true);
+					});	
+				});
+
+				// Test 6
+				it("will call the next page", function(){
+					runs(function(){
+
+						// View and API components are loaded
+						// create a new collection of posts
+						collection = new Tint.PostCollection();
+						collection.username = 'idealab';
+						// create a new view, associating them with this collection
+						postHolderView6 = new Tint.PostHolderView({
+							model: collection,
+							el: $('#tab4')
+						});
+						// pull data from server
+						collection.fetch();
+					});
+
+					waitsFor(function() {
+						return ($('#tab4 div').length > 0);
+					}, "The fetch should return", test_delay);
+
+					runs(function(){
+						// call the next page since the fetch has returned
+						postHolderView6.next();
+						expect($('#tab4 div').length).toBeGreaterThan(1);
+					});	
+				});
+
 
 			});
-			$('.test1-fetch-network').click(function(){
 
-			});
+			var jasmineEnv = jasmine.getEnv();
+  			jasmineEnv.updateInterval = 250;
+  			var htmlReporter = new jasmine.HtmlReporter();
+  			jasmineEnv.addReporter(htmlReporter);
+  			jasmineEnv.execute();
+
 		});
 	</script>
 </body>

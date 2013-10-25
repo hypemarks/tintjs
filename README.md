@@ -65,11 +65,15 @@ Views can use custom templates to render the data. Our templating system makes t
 		// View and API components are loaded
 		// create a new collection of posts
 		var collection = new Tint.PostCollection();
-		collection.username = 'your_username_here';
+		collection.username = 'your_username_here'; // required
 		// create a new view, associating them with this collection
-		var postView = new Tint.PostView({
+		var postHolderView = new Tint.PostHolderView({
 			model: collection
-			template: Tint.Utils.template('.my_template_name')
+			template: 'http://www.example.com/url/to/your/jsonp/template', // optional template for a single post (see http://dev.tintup.com/template/postTemplate_basic?callback=example for an example)
+			template_css: 'http://www.example.com/url/to/your/css.css', // optional css file to go with your template
+			afterRender: function(){ // optional function to be called after all of the posts have rendered
+				console.log('render finished');
+			}
 		});
 		// pull data from server
 		collection.fetch();
