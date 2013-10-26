@@ -191,7 +191,7 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
         initialize: function(options){
             var that = this;
             this.options = options;
-            this.listenTo(this.model, "sync", this.render);
+            this.listenTo(this.model, "reset", this.render);
             if(typeof this.options !== 'undefined' && this.options.template){this.template = this.options.template;}
             if(typeof this.options !== 'undefined' && this.options.template_css){this.template_css = this.options.template_css;}
 
@@ -242,6 +242,7 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
             $(this.el).append(speedUpTmp);
         },
         renderAppend: function(){
+            console.log('PostHolderView renderAppend');
             var that = this;
             var speedUpTmp = $('<div></div>'); // we put the hypes in the container and not in the DOM so we don't do repaints
             _.each(this.model.models, function(col, index) {
@@ -249,6 +250,8 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
             }, this);
      
             $(this.el).append(speedUpTmp);
+
+            return false;
         },
         // called by post so that function can be called after all posts have rendered
         postRendered: function(){
@@ -261,6 +264,7 @@ error:a.fetchError,add:a.options.add,data:l(b)})};d=$(a.options.target);e=!0;g=1
         },
         // pulls next page and appends new posts
         next: function(){
+            console.log('next');
             this.infiniScroll.trigger();
         }
     });
